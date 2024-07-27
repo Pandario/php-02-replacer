@@ -10,7 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $word = strtolower($_POST['word']);
-
+        
+        if (!preg_match('/^[a-zA-Z]+$/', $word)) {
+            header("Location: index.php?error=invalid");
+            exit();
+        }
     
         $stmt = $con->prepare("INSERT INTO first_word (word) VALUES (:word)");
         $stmt->bindParam(':word', $word);
