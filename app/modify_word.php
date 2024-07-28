@@ -10,20 +10,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $letter1 = strtolower($_POST['letter1']);
     $letter2 = strtolower($_POST['letter2']);
 
-    // Validating
+    // Validation letters without numbrs/symbols
     if (!preg_match('/^[a-zA-Z]$/', $letter1) || !preg_match('/^[a-zA-Z]$/', $letter2) || $letter1 == $letter2) {
         header("Location: index.php?error=invalid&selected_word_id=$originalWordId&selected_word=$originalWord");
         exit();
     }
 
-    // Replacing letters
+
     $newWord = str_replace($letter1, $letter2, $originalWord);
 
     try {
         $con = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $con->prepare("INSERT INTO first_word (word, original_word_id) VALUES (:word, :original_word_id)");
+
+        $stmt = $con->prepare("CALL GetSmallestAvailableID(@smallestID)");
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $stmt = $con->query("SELECT @smallestID AS smallestID");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $smallestID = $row['smallestID'];
+
+
+        $stmt = $con->prepare("INSERT INTO first_word (id, word, original_word_id) VALUES (:id, :word, :original_word_id)");
+        $stmt->bindParam(':id', $smallestID);
         $stmt->bindParam(':word', $newWord);
         $stmt->bindParam(':original_word_id', $originalWordId);
 
