@@ -7,7 +7,7 @@ $dbname = "mysql";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $word = strtolower($_POST['word']);
 
-    // Validation letters without numbrs/symbols
+
     if (!preg_match('/^[a-zA-Z]+$/', $word)) {
         header("Location: index.php?error=invalid");
         exit();
