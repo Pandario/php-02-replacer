@@ -1,9 +1,11 @@
 We can add words in db. can change letter in word. New word would be written in table with foreing key, related 1 to many.
 
+phpadmin sql setup:
+
 CREATE DATABASE IF NOT EXISTS `mysql`;
 USE `mysql`;
 
-CREATE TABLE  `first_word` (
+CREATE TABLE IF NOT EXISTS  `first_word` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `word` VARCHAR(255) NOT NULL,
     `original_word_id` INT DEFAULT NULL,
